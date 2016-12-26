@@ -25,7 +25,7 @@ LDFLAGS = -L /usr/lib/x86_64-linux-gnu/ -L /usr/local/lib
 %.o: %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-terrier: main.o
+terrier: main.o hex.o
 	$(CC) $^  $(LDFLAGS) -o $@
 
 clean:
