@@ -13,6 +13,8 @@ IPATH = .
 
 CFLAGS  = -O2 --std=c99 -Wall -Wextra
 
+DEBUG = 1
+
 # DEBUG option, set before make, eg 'DEBUG=1 make'
 ifeq ($(DEBUG),1)
 	CFLAGS+=-DDEBUG=1
