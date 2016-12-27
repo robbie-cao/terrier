@@ -94,8 +94,18 @@ int main (void)
         printf("...\n");
 
         // Parse buffer and action accordingly
-        // TODO
 #if DEBUG
+        // Test send cmd
+        if (strcmp((char *)buf_in, "send") == 0) {
+            led_set(1, 20);
+            led_set(2, 0);
+            vol_get();
+            vol_set(50);
+
+            continue;
+        }
+
+        // Test receive cmd
         int len = hex2data(buf2, (char *)buf_in, strlen((char *)buf_in));
         hexdump(buf2, len);
         cmd_parse(buf2, len, cmd_callback);

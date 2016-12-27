@@ -6,6 +6,7 @@
 
 #include "log.h"
 #include "cmd.h"
+#include "hex.h"
 #include "stm8_cmd.h"
 
 /**
@@ -48,33 +49,67 @@ int cmd_parse(const uint8_t *cmd_bytes, unsigned int len, cmd_callback_t cb)
     if (cb) {
         cb(scmd, 1);
     }
-#if 0
-    cmd = p[pos];
-    pos += 1;
-    while (pos < len) {
-        struct stm8_cmd *scmd = (struct stm8_cmd *)(p + pos);
-        if (cb) {
-            cb(scmd, 1);
-        }
-        switch (cmd) {
-            case LED_GET:
-                pos += 2;
-                break;
-            case BUTTON_GET:
-                pos += 2;
-                break;
-            case VOL_GET:
-                pos += 1;
-                break;
-            case NFC_CARD_INFO:
-            case NFC_READ_CARD:
-                // TODO
-            default:
-                pos += 1;
-                break;
-        }
+
+    return 0;
+}
+
+int cmd_send(const struct stm8_cmd *pcmd, uint8_t cmd_size)
+{
+    uint8_t i = 0;
+    uint8_t buf[32];
+
+    buf[0] = 0x55;
+    buf[1] = (cmd_size >> 8) & 0xff;
+    buf[2] = cmd_size & 0xff;
+
+    for (i = 0; i < cmd_size; i++) {
+        buf[3 + i] = *((uint8_t *)pcmd + i);
     }
-#endif
+
+    hexdump(buf, cmd_size + 3);
+
+    // Send cmd to UART
+    // TODO
+
+    return 0;
+}
+
+int led_set(uint8_t led, uint8_t brightness)
+{
+    uint8_t buf[8];
+    struct stm8_cmd *pcmd = (struct stm8_cmd *)buf;
+
+    pcmd->cmd_code = LED_SET;
+    pcmd->data[0] = led;
+    pcmd->data[1] = brightness;
+
+    cmd_send(pcmd, 3);
+
+    return 0;
+}
+
+int vol_set(uint8_t vol)
+{
+    uint8_t buf[8];
+    struct stm8_cmd *pcmd = (struct stm8_cmd *)buf;
+
+    pcmd->cmd_code = VOL_SET;
+    pcmd->data[0] = vol;
+
+    cmd_send(pcmd, 2);
+
+    return 0;
+}
+
+int vol_get(void)
+{
+    uint8_t buf[8];
+    struct stm8_cmd *pcmd = (struct stm8_cmd *)buf;
+
+    pcmd->cmd_code = VOL_GET;
+    pcmd->data[0] = 0;
+
+    cmd_send(pcmd, 2);
 
     return 0;
 }
