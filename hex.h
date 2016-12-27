@@ -15,4 +15,6 @@ int hex2data(unsigned char *data, const char *hexstring, unsigned int len);
 
 int data2hex(char *hexstring, const unsigned char *data, unsigned int len);
 
+void hexdump(const unsigned char *data, unsigned int len);
+
 #endif

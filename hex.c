@@ -63,3 +63,12 @@ int data2hex(char *hexstring, const unsigned char *data, unsigned int len)
     return strlen(hexstring);
 }
 
+void hexdump(const unsigned char *data, unsigned int len)
+{
+    int i = 0;
+
+    for (i = 0; i < len; i++) {
+        printf("%02x ", data[i]);
+    }
+    printf("\n");
+}
